@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function expensivePhoneFunc(product) {
+  console.log('expensivePhoneFunc')
+  return product[0]
 }
 
-export default App;
+function App() {
+  let products = React.useMemo(
+    () => [
+      {
+        name: 'Phone XL',
+        price: 100
+      },
+      {
+        name: 'Phone Mini',
+        price: 80
+      },
+      {
+        name: 'Phone Standard',
+        price: 60
+      }
+    ],
+    []
+  )
+
+  const [count, setCount] = React.useState(0)
+
+  // If we don't use useMemo here, the expensivePhoneFunc will be called after every render.
+  const expensivePhone = expensivePhoneFunc(products)
+
+  // If we use useMemo here, expensivePhoneFunc will be called only once
+  // if the products change, expensivePhoneFunc will be called again
+  const expensivePhone1 = React.useMemo(() => {
+    return expensivePhoneFunc(products)
+  }, [products])
+
+  return (
+    <div>
+      <h3>Product : {expensivePhone1.name}</h3>
+      <h4>Price : {expensivePhone1.price}</h4>
+      <br />
+      <h3>Count : {count}</h3>
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  )
+}
+
+export default App
